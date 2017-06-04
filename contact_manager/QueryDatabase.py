@@ -25,8 +25,7 @@ class QueryDB(object):
             Web VARCHAR(150))
         """
     SQL_INSERT = """
-        INSERT INTO Contacts(
-            Name, Lastname, Phone, Direction, Email, Web)
+        INSERT INTO Contacts(Name, Lastname, Phone, Direction, Email, Web)
             VALUES(%(name)s, %(lastname)s, %(phone)s, %(direction)s, %(email)s, %(web)s)
             RETURNING Contact_id
         """
