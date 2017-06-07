@@ -98,11 +98,11 @@ class ContactManagerDB(object):
             db, cursor = self._connection_database()
             cursor.execute(QueryDB.queries_dict()[SQL_CHECK])
             db_version = cursor.fetchone()
+            print('Connection to database successfull.')
         except ContactManagerErrorDB as msg:
             print('Connection failed: ', msg, sep='')
         finally:
             self._close_connection_database(db, cursor)
-        print('Connection to database successfull.')
         return db_version
 
     def check_contact_table(self):
