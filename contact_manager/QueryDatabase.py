@@ -9,7 +9,7 @@ class QueryDB(object):
     Class defining database query variables.
     """
 
-    FIELDS = ['Name','Lastname', 'Phone', 'Direction', 'Email', 'Web']
+    FIELDS = ['Name','Lastname', 'Phone', 'Latitude', 'Longitude', 'Radius', 'Direction', 'Email', 'Web']
 
     SQL_CHECK = """
         SELECT version()
@@ -20,13 +20,18 @@ class QueryDB(object):
             Name VARCHAR(25) NOT NULL,
             Lastname VARCHAR(25) NOT NULL,
             Phone VARCHAR(25),
+            Latitude VARCHAR(20),
+            Longitude VARCHAR(20),
+            Radius VARCHAR(10),
             Direction VARCHAR(150),
             Email VARCHAR(50),
             Web VARCHAR(150))
         """
     SQL_INSERT = """
-        INSERT INTO Contacts(Name, Lastname, Phone, Direction, Email, Web)
-            VALUES(%(name)s, %(lastname)s, %(phone)s, %(direction)s, %(email)s, %(web)s)
+        INSERT INTO Contacts(
+            Name, Lastname, Phone, Latitude, Longitude, Radius, Direction, Email, Web)
+            VALUES(%(name)s, %(lastname)s, %(phone)s, %(latitude)s, %(longitude)s,
+                   %(radius)s, %(direction)s, %(email)s, %(web)s)
             RETURNING Contact_id
         """
     SQL_UPDATE = """
@@ -34,14 +39,21 @@ class QueryDB(object):
             SET Name = %(name)s,
                 Lastname = %(lastname)s,
                 Phone = %(phone)s,
+                Latitude = %(latitude)s,
+                Longitude = %(longitude)s,
+                Radius = %(radius)s,
                 Direction = %(direction)s,
                 Email = %(email)s,
                 Web = %(web)s
             WHERE Contact_id = %(contact_id)s
         """
-    SQL_SELECT = """
-        SELECT * FROM Contactos WHERE
-        """
+    SQL_SELECT = {
+        'base': "SELECT * FROM Contactos WHERE",
+        'name': " Name = '{}' ",
+        'direction': " Direction LIKE '%{}%' ",
+        'email': " Email = '{}' ",
+        'add_condition': "AND",
+    }
     SQL_SORT = """
         ORDER BY Name ASC, Lastname ASC
         """

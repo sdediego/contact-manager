@@ -98,11 +98,11 @@ class ContactManagerDB(object):
             db, cursor = self._connection_database()
             cursor.execute(QueryDB.queries_dict()[SQL_CHECK])
             db_version = cursor.fetchone()
-            print('Connection to database successfull.')
         except ContactManagerErrorDB as msg:
             print('Connection failed: ', msg, sep='')
         finally:
             self._close_connection_database(db, cursor)
+        print('Connection to database successfull.')
         return db_version
 
     def check_contact_table(self):
@@ -201,32 +201,31 @@ class ContactManagerDB(object):
         Constructs the query based on the filter conditions.
         """
         # Base query.
-        sql = QueryDB.queries_dict()[SQL_SELECT]
+        sql = QueryDB.queries_dict()[SQL_SELECT]['base']
         conditions = self._query_conditions(name, direction, email)
         # Construct the query conditions.
         if conditions:
             for count, condition in enumerate(conditions, start=1):
                 sql += condition
                 if count < len(conditions):
-                    sql += "AND"
+                    sql += QueryDB.queries_dict()[SQL_SELECT]['add_condition']
             sql += QueryDB.queries_dict()[SQL_SORT]
             return sql
         return None
 
-    def _query_conditions(self, name, post_town_country, email):
+    def _query_conditions(self, name, direction, email):
         """
         Contructs query conditions.
         """
         conditions = []
         if name:
-            cond_name = " Name = '{}' ".format(name)
+            cond_name = QueryDB.queries_dict()[SQL_SELECT]['name'].format(name)
             conditions.append(cond_name)
         if direction:
-            direction = '%' + direction + '%'
-            cond_direction = " Direction LIKE '{}' ".format(direction)
+            cond_direction = QueryDB.queries_dict()[SQL_SELECT]['direction'].format(direction)
             conditions.append(cond_direction)
         if email:
-            cond_email = " Email = '{}' ".format(email)
+            cond_email = QueryDB.queries_dict()[SQL_SELECT]['email'].format(email)
             conditions.append(cond_email)
         return conditions
 
