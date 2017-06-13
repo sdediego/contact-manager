@@ -87,7 +87,6 @@ class GooglePlaces(object):
         request = GooglePlacesSearchRequest(self.__class__.TEXT_SEARCH_API_URL,
                                            self._request_params)
         request_url, response = request.fetch_json_response()
-        #self._validate_response_status(request_url, response)
         search_result = GooglePlacesSearchResponse(request_url, response)
         search_result._validate_response_status(request_url, response)
         return search_result
